@@ -7,7 +7,7 @@ Fresh nvim build (0.11.x), not a port of the legacy vim setup.
 - `scripts/install_nvim.sh` symlinks `~/.config/nvim` -> this dir. Nothing is hand-placed under `~/.config`.
 - `vimrc_extended` is **not** used here; legacy vim keeps working untouched.
 
-**Rule: every plugin added gets a row in the table below plus its keys in the relevant section. Keys only, no prose.**
+**Rule: every plugin added gets a row in the table below (linked to its repo) plus a section: one line on what it's about, then keys. No further prose.**
 
 Roadmap / what's next: [TODO.md](TODO.md).
 
@@ -15,16 +15,28 @@ Roadmap / what's next: [TODO.md](TODO.md).
 
 | Plugin | Replaces | What it is |
 |---|---|---|
-| lazy.nvim | Vundle | plugin manager, self-bootstrapping |
-| tokyonight.nvim | `desert` | colorscheme |
-| fzf-lua | fzf.vim | fuzzy finder (files, buffers, grep) |
-| bufferline.nvim | vim-buftabline | the buffer bar along the top — display only, no keys of its own |
-| lualine.nvim | custom statusline + powerline | the status line along the bottom |
-| nvim-lspconfig + mason | jedi-vim | LSP client + server installer; `basedpyright` for Python |
-| blink.cmp | supertab | autocompletion popup, fed by the LSP |
-| nvim-web-devicons | — | icons, dependency of bufferline/lualine |
+| [lazy.nvim](https://github.com/folke/lazy.nvim) | Vundle | plugin manager, self-bootstrapping |
+| [tokyonight.nvim](https://github.com/folke/tokyonight.nvim) | `desert` | colorscheme |
+| [fzf-lua](https://github.com/ibhagwan/fzf-lua) | fzf.vim | fuzzy finder (files, buffers, grep) |
+| [bufferline.nvim](https://github.com/akinsho/bufferline.nvim) | vim-buftabline | the buffer bar along the top — display only, no keys of its own |
+| [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim) | custom statusline + powerline | the status line along the bottom |
+| [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) + [mason](https://github.com/mason-org/mason.nvim) | jedi-vim | LSP client + server installer; `basedpyright` for Python |
+| [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) | regex syntax highlighting, vim-syntax-extra | real syntax trees: better highlighting + indentation. No keys. `master` branch (frozen, 0.11-only) |
+| [blink.cmp](https://github.com/saghen/blink.cmp) | supertab | autocompletion popup, fed by the LSP |
+| [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) | vim-gitgutter | git change markers in the margin + hunk operations |
+| [which-key.nvim](https://github.com/folke/which-key.nvim) | this README, partly | pause mid-keypress (e.g. after `<Space>`) → popup of every binding that continues from there. No keys of its own |
+| [flash.nvim](https://github.com/folke/flash.nvim) | counting `10j`, most `/foo` navigation | labeled jump: `s` + 2 chars + label key → cursor lands there |
+| [oil.nvim](https://github.com/stevearc/oil.nvim) | nerdtree (on trial), netrw | a directory is a text buffer: edit lines = rename/delete/create files |
+| [nvim-surround](https://github.com/kylechui/nvim-surround) | vim-surround (legacy vim had it) | add/change/delete surrounding quotes, brackets, tags |
+| [persistence.nvim](https://github.com/folke/persistence.nvim) | vim-obsession | auto-saves your session per directory; restore buffers/splits as you left them |
+| [mini.pairs](https://github.com/echasnovski/mini.pairs) | — | type `(` get `()`, auto-closes quotes/brackets |
+| [trouble.nvim](https://github.com/folke/trouble.nvim) | chasing `]d` blind | all diagnostics in one navigable bottom panel |
+| [undotree](https://github.com/mbbill/undotree) | — | browse vim's full undo history as a tree, recover overwritten states |
+| [nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons) | — | icons, dependency of bufferline/lualine |
 
-## fzf-lua
+## Finding things ([fzf-lua](https://github.com/ibhagwan/fzf-lua))
+
+Type a few letters, fuzzy-match against every file/buffer/line in the project, hit enter. How you open anything that isn't already on screen.
 
 Leader is `<Space>`. These three mirror the old fzf.vim bindings, so muscle memory carries over.
 
@@ -53,7 +65,9 @@ Inside the picker:
 
 The `Enter` override exists on purpose: by default multi-select dumps into a quickfix list instead of opening buffers.
 
-## LSP
+## Code intelligence (LSP — [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) + [mason](https://github.com/mason-org/mason.nvim))
+
+A language server (basedpyright for Python) reads your code and answers questions: where is this defined, who calls it, what's wrong on this line. What jedi-vim did, but for any language.
 
 Mostly nvim 0.11 built-ins — no plugin needed, which is why `lsp.lua` maps almost nothing.
 
@@ -80,7 +94,9 @@ Mostly nvim 0.11 built-ins — no plugin needed, which is why `lsp.lua` maps alm
 
 Diagnostics show inline (`virtual_text`); basedpyright runs in `basic` mode to cut strict-mode noise.
 
-## Completion (blink.cmp, `super-tab` preset)
+## Completion ([blink.cmp](https://github.com/saghen/blink.cmp), `super-tab` preset)
+
+The popup that suggests code as you type in insert mode, fed by the LSP. Old supertab, smarter.
 
 | Key | Does |
 |---|---|
@@ -94,15 +110,110 @@ Diagnostics show inline (`virtual_text`); basedpyright runs in `basic` mode to c
 
 Sources: LSP, paths, current buffer.
 
-## Buffer bar / status line
+## Motion ([flash.nvim](https://github.com/folke/flash.nvim))
 
-No keys of their own. Buffers are navigated with the `vimrc_basic` mappings: `Ctrl-N` next, `Ctrl-P` previous, `<leader>D` close current.
+Jump the cursor to anything you can *see* in ~3 keystrokes, instead of counting lines or spamming `w`/`/`. Point with your eyes, type 2 chars of the target, press the label that appears.
 
-## Managing plugins
+| Key | Does |
+|---|---|
+| `s` + 2 chars | labels appear on every match on screen → press a label to jump there |
+| `S` | select the treesitter node under the cursor; repeat `S`/`s` to grow, `;`/`,` also work |
+| `Esc` | bail out |
+
+Shadows vim's native `s`/`S` — use `cl`/`cc` for those (they're synonyms anyway).
+Enhanced `f`/`t` and `/` integration exist but are off; enable in flash.lua if wanted.
+
+## Files ([oil.nvim](https://github.com/stevearc/oil.nvim))
+
+File management with vim editing instead of a tree sidebar: the directory opens as a normal buffer where each line is a file — edit the text, `:w`, and the filesystem changes to match.
+
+| Key | Does |
+|---|---|
+| `-` | open the current file's directory (again = go up a level) |
+| `Enter` | open file / descend into directory |
+| edit a line + `:w` | rename that file |
+| `dd` + `:w` | delete it |
+| `o` + type a name + `:w` | create it (end with `/` for a directory) |
+| any vim op + `:w` | works: `yy`/`p` copies a file, visual-select + `d` deletes many |
+| `Ctrl-c` | close without applying |
+
+Every `:w` shows a confirmation of the pending filesystem operations before running them.
+
+## Git ([gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim))
+
+Shows what you've changed since the last commit, in the margin, live — and lets you stage/discard/inspect each change block without leaving the buffer.
+
+Margin markers: `┃` changed, `+` added, `_` deleted. A "hunk" = one block of changed lines.
+
+| Key | Does |
+|---|---|
+| `]c` / `[c` | next / previous hunk |
+| `<leader>gs` | stage hunk (again to unstage) |
+| `<leader>gr` | reset hunk — throw away those changes |
+| `<leader>gp` | preview hunk diff in a float |
+| `<leader>gb` | blame current line |
+
+(`<leader>g*` because `<leader>hs` was already taken by the split mappings in vimrc_basic.)
+
+## Surround ([nvim-surround](https://github.com/kylechui/nvim-surround))
+
+Operations on the quotes/brackets/tags *around* something: add them, change them, remove them.
+
+| Key | Does |
+|---|---|
+| `ysiw"` | wrap word in `"` (`ys` + motion + char) |
+| `cs"'` | change surrounding `"` to `'` |
+| `ds(` | delete surrounding `(` `)` |
+| `S"` (visual) | wrap selection |
+
+These two-key sequences (`ys`/`ds`/`cs`) take priority over flash's operator `s` — flash jumps still work from visual mode.
+
+## Sessions ([persistence.nvim](https://github.com/folke/persistence.nvim))
+
+Auto-saves the editor state (buffers, splits, cursor) per directory on exit. Nothing to do while working — only restoring is manual.
+
+| Key | Does |
+|---|---|
+| `<leader>sl` | restore the session for this directory |
+| `<leader>sL` | restore whatever session was last, regardless of directory |
+
+## Diagnostics list ([trouble.nvim](https://github.com/folke/trouble.nvim))
+
+Collects every warning/error the LSP knows about into one bottom panel instead of hunting margin markers file by file.
+
+| Key | Does |
+|---|---|
+| `<leader>d` | toggle the panel |
+| `j`/`k` + `Enter` | jump to the diagnostic |
+| `q` | close |
+
+## Undo history ([undotree](https://github.com/mbbill/undotree))
+
+Vim keeps every past state of a buffer, including branches you "overwrote" by undoing then typing. This shows the whole tree and lets you jump to any state. Undo history persists across restarts (`undofile`).
+
+| Key | Does |
+|---|---|
+| `<leader>u` | toggle the tree panel |
+| `j`/`k` + `Enter` | preview / jump to a state |
+| `q` | close |
+
+## Auto-pairs ([mini.pairs](https://github.com/echasnovski/mini.pairs))
+
+Typing `(`, `[`, `{`, `"`, `'` inserts the closing half; `Backspace` between a pair removes both. No keys to learn.
+
+## Buffer bar / status line ([bufferline](https://github.com/akinsho/bufferline.nvim) / [lualine](https://github.com/nvim-lualine/lualine.nvim))
+
+Pure display: open buffers as tabs along the top, mode/file/position along the bottom. No keys of their own. Buffers are navigated with the `vimrc_basic` mappings: `Ctrl-N` next, `Ctrl-P` previous, `<leader>D` close current.
+
+## Managing plugins ([lazy.nvim](https://github.com/folke/lazy.nvim))
+
+Installs whatever `lua/plugins/*.lua` declares, pins versions in `lazy-lock.json`.
 
 | Command | Does |
 |---|---|
 | `:Lazy` | plugin UI — `S` sync, `U` update, `X` clean, `?` help |
 | `:Lazy sync` | install/remove to match the specs, then rewrite `lazy-lock.json` |
+| `:TSInstallInfo` | which treesitter parsers are installed |
+| `:TSUpdate` | update parsers (also runs on plugin update) |
 
 To add a plugin: create `lua/plugins/<name>.lua` returning its spec, restart nvim, commit the spec **and** the updated `lazy-lock.json`.
