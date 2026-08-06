@@ -1,6 +1,6 @@
 # Neovim config
 
-Fresh nvim build (0.11.x), not a port of the legacy vim setup.
+Fresh nvim build (0.12.x), not a port of the legacy vim setup.
 
 - `init.lua` sources `../vimrc_basic` (shared with legacy vim), then bootstraps lazy.nvim.
 - One plugin = one file in `lua/plugins/`. Versions pinned in `lazy-lock.json`.
@@ -32,6 +32,7 @@ Roadmap / what's next: [TODO.md](TODO.md).
 | [mini.pairs](https://github.com/echasnovski/mini.pairs) | — | type `(` get `()`, auto-closes quotes/brackets |
 | [trouble.nvim](https://github.com/folke/trouble.nvim) | chasing `]d` blind | all diagnostics in one navigable bottom panel |
 | [undotree](https://github.com/mbbill/undotree) | — | browse vim's full undo history as a tree, recover overwritten states |
+| [avante.nvim](https://github.com/yetone/avante.nvim) | (the AI layer) | Cursor-style AI sidebar + inline diffs; key-free via your logged-in `claude` CLI over ACP |
 | [nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons) | — | icons, dependency of bufferline/lualine |
 
 ## Finding things ([fzf-lua](https://github.com/ibhagwan/fzf-lua))
@@ -108,7 +109,8 @@ The popup that suggests code as you type in insert mode, fed by the LSP. Old sup
 | `Ctrl-k` | toggle signature |
 | `Ctrl-e` | cancel |
 
-Sources: LSP, paths, current buffer.
+Sources: LSP, paths, current buffer. Disabled inside avante's AI prompt buffers (`Avante*`
+filetypes) — you're typing English there, not code.
 
 ## Motion ([flash.nvim](https://github.com/folke/flash.nvim))
 
@@ -204,6 +206,38 @@ Typing `(`, `[`, `{`, `"`, `'` inserts the closing half; `Backspace` between a p
 ## Buffer bar / status line ([bufferline](https://github.com/akinsho/bufferline.nvim) / [lualine](https://github.com/nvim-lualine/lualine.nvim))
 
 Pure display: open buffers as tabs along the top, mode/file/position along the bottom. No keys of their own. Buffers are navigated with the `vimrc_basic` mappings: `Ctrl-N` next, `Ctrl-P` previous, `<leader>D` close current.
+
+## AI ([avante.nvim](https://github.com/yetone/avante.nvim))
+
+Cursor-style AI: a sidebar that chats about your code and proposes edits as accept/reject diffs.
+Runs **key-free** by driving your logged-in `claude` CLI over ACP (the `claude-agent-acp` adapter) —
+your Claude subscription, no API key. Provider-agnostic **and portable**: `avante.lua` auto-picks the agent CLI installed on the
+machine — `claude` here → `claude-code`; `codex` on the personal box → `codex` (riding the ChatGPT
+subscription). Both legs are defined; override any time with `:AvanteSwitchProvider`.
+
+| Key | Does |
+|---|---|
+| `<leader>aa` | ask avante about the current file / selection |
+| `<leader>ae` | edit the selected code with a prompt |
+| `<leader>at` | toggle the sidebar |
+| `<leader>af` | focus the sidebar |
+| `<leader>ar` | refresh |
+| `<leader>aS` | stop generating |
+| `<leader>aM` / `<leader>am` | pick the ACP model / mode |
+
+In the sidebar:
+
+| Key | Does |
+|---|---|
+| `<CR>` / `<C-s>` | submit (normal / insert mode) |
+| `@` | add a file to the context |
+| `<Tab>` | switch between input and result windows |
+| `a` / `A` | apply the change at cursor / apply all |
+| `co` / `ct` / `cb` | on a conflict: keep ours / theirs / both |
+| `]x` / `[x` | next / previous change |
+
+Commands: `:AvanteAsk`, `:AvanteSwitchProvider <name>`. **Never** enable a direct-API provider with
+`auth_type="max"` (User-Agent-spoofing ban-evasion) — ACP only. First use: restart nvim, then `<leader>aa`.
 
 ## Managing plugins ([lazy.nvim](https://github.com/folke/lazy.nvim))
 

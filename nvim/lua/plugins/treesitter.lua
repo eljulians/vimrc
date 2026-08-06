@@ -1,7 +1,8 @@
 return {
   "nvim-treesitter/nvim-treesitter",
-  -- master = the frozen, nvim 0.11-compatible branch (main is a rewrite
-  -- requiring 0.12+). Revisit when upgrading nvim -- tracked in TODO.md.
+  -- master = the frozen, stable branch (still the safe default on 0.12). Since we're
+  -- now on 0.12.4 the `main` rewrite is available -- migrating is an optional, tracked
+  -- upgrade (see TODO.md), not done yet.
   branch = "master",
   build = ":TSUpdate",
   event = { "BufReadPre", "BufNewFile" },

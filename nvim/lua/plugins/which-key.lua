@@ -8,6 +8,7 @@ return {
       -- group names shown in the popup for our prefixes
       { "<leader>g", group = "git" },
       { "<leader>s", group = "session (+sv=source vimrc)" },
+      { "<leader>a", group = "avante (AI)" },
     },
   },
 }
