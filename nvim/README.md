@@ -18,22 +18,29 @@ Roadmap / what's next: [TODO.md](TODO.md).
 | [lazy.nvim](https://github.com/folke/lazy.nvim) | Vundle | plugin manager, self-bootstrapping |
 | [tokyonight.nvim](https://github.com/folke/tokyonight.nvim) | `desert` | colorscheme |
 | [fzf-lua](https://github.com/ibhagwan/fzf-lua) | fzf.vim | fuzzy finder (files, buffers, grep) |
-| [bufferline.nvim](https://github.com/akinsho/bufferline.nvim) | vim-buftabline | the buffer bar along the top — display only, no keys of its own |
+| [grug-far.nvim](https://github.com/MagicDuck/grug-far.nvim) | ⛔ quicker.nvim, 🧊 nvim-spectre | project-wide find & replace in an editable buffer |
 | [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim) | custom statusline + powerline | the status line along the bottom |
 | [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) + [mason](https://github.com/mason-org/mason.nvim) | jedi-vim | LSP client + server installer; `basedpyright` for Python |
-| [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) | regex syntax highlighting, vim-syntax-extra | real syntax trees: better highlighting + indentation. No keys. `master` branch (frozen, 0.11-only) |
+| [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) | regex syntax highlighting, vim-syntax-extra | real syntax trees: better highlighting. No keys. `main` branch (0.12 rewrite); highlight is opt-in via a FileType autocmd; needs the `tree-sitter` CLI |
+| [nvim-treesitter-context](https://github.com/nvim-treesitter/nvim-treesitter-context) | — | sticky header showing the enclosing class/def as you scroll (VS Code sticky-scroll). No keys |
 | [blink.cmp](https://github.com/saghen/blink.cmp) | supertab | autocompletion popup, fed by the LSP |
 | [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) | vim-gitgutter | git change markers in the margin + hunk operations |
+| [codediff.nvim](https://github.com/esmuellert/codediff.nvim) | `git diff \| less` in another pane, 🧊 diffview.nvim | VSCode's diff engine via FFI: multi-file side-by-side diffs, history browser, 3-way merge |
+| [nvim-dap](https://github.com/mfussenegger/nvim-dap) + [nvim-dap-python](https://github.com/mfussenegger/nvim-dap-python) | the `ipdb.set_trace()` habit | real breakpoint debugging; `debugpy` supplied on demand by `uv` |
+| [nvim-dap-view](https://github.com/igorlfs/nvim-dap-view) | ⛔ nvim-dap-ui | the debugger panel: scopes, stack, breakpoints, watches, REPL |
 | [which-key.nvim](https://github.com/folke/which-key.nvim) | this README, partly | pause mid-keypress (e.g. after `<Space>`) → popup of every binding that continues from there. No keys of its own |
 | [flash.nvim](https://github.com/folke/flash.nvim) | counting `10j`, most `/foo` navigation | labeled jump: `s` + 2 chars + label key → cursor lands there |
 | [oil.nvim](https://github.com/stevearc/oil.nvim) | nerdtree (on trial), netrw | a directory is a text buffer: edit lines = rename/delete/create files |
 | [nvim-surround](https://github.com/kylechui/nvim-surround) | vim-surround (legacy vim had it) | add/change/delete surrounding quotes, brackets, tags |
 | [persistence.nvim](https://github.com/folke/persistence.nvim) | vim-obsession | auto-saves your session per directory; restore buffers/splits as you left them |
-| [mini.pairs](https://github.com/echasnovski/mini.pairs) | — | type `(` get `()`, auto-closes quotes/brackets |
+| [mini.pairs](https://github.com/nvim-mini/mini.pairs) | — | type `(` get `()`, auto-closes quotes/brackets |
 | [trouble.nvim](https://github.com/folke/trouble.nvim) | chasing `]d` blind | all diagnostics in one navigable bottom panel |
-| [undotree](https://github.com/mbbill/undotree) | — | browse vim's full undo history as a tree, recover overwritten states |
+| [render-markdown.nvim](https://github.com/MeanderingProgrammer/render-markdown.nvim) | — | renders markdown (and avante's AI output) in-buffer: headings, code blocks, tables, checkboxes |
+| [dropbar.nvim](https://github.com/Bekaboo/dropbar.nvim) | — | VS Code-style breadcrumb bar (file › class › method) across the window top |
+| [snacks.nvim](https://github.com/folke/snacks.nvim) | indent-blankline, nvim-notify, dashboard/zen plugins | folke mega-suite; enabled: dashboard, indent guides, notifier, zen, scratch, bigfile/quickfile |
+| [harpoon2](https://github.com/ThePrimeagen/harpoon/tree/harpoon2) | — | pin a few hot files, jump between them in 1–2 keys |
 | [avante.nvim](https://github.com/yetone/avante.nvim) | (the AI layer) | Cursor-style AI sidebar + inline diffs; key-free via your logged-in `claude` CLI over ACP |
-| [nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons) | — | icons, dependency of bufferline/lualine |
+| [nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons) | — | icons, dependency of lualine/trouble/oil/render-markdown |
 
 ## Finding things ([fzf-lua](https://github.com/ibhagwan/fzf-lua))
 
@@ -51,6 +58,7 @@ Inside the picker:
 
 | Key | Does |
 |---|---|
+| `Ctrl-j` / `Ctrl-k` | next / previous item — `j`/`k` alone type into the filter |
 | `Enter` | open (always edits, even with multiple selected) |
 | `Tab` | multi-select |
 | `Ctrl-s` / `Ctrl-v` / `Ctrl-t` | open in split / vsplit / tab |
@@ -65,6 +73,32 @@ Inside the picker:
 | `F1` | show all keys |
 
 The `Enter` override exists on purpose: by default multi-select dumps into a quickfix list instead of opening buffers.
+
+## Find & replace ([grug-far.nvim](https://github.com/MagicDuck/grug-far.nvim))
+
+The other half of `<leader>R`: fzf-lua *finds*, this one *changes*. Results land in an ordinary editable buffer — review every hit, then apply in one go.
+
+| Key | Does |
+|---|---|
+| `<leader>S` | open it (normal mode) |
+| `<leader>S` | same, pre-filled with the visual selection (visual mode) |
+| `:GrugFarWithin` | replace only *inside* the selected range |
+
+It opens in insert mode with the cursor in the first of four inputs — **Search**, **Replace**, **Files Filter**, **Flags**. `Tab`/`Shift-Tab` move between them. Results appear below as you type.
+
+Actions are on `<localleader>`, which is unset here and so falls back to `\`:
+
+| Key | Does |
+|---|---|
+| `\r` | replace all — writes the change to disk |
+| `\s` | sync: push your hand-edits in this buffer back to the files |
+| `\c` | close |
+| `Enter` | jump to the match under the cursor |
+| `Up` / `Down` | open previous / next match (shadows the vimrc_basic resize maps here) |
+| `\q` | send results to quickfix |
+| `g?` | show every key |
+
+`\r` does a blind replace of the search term; `\s` is for when you edited the result lines by hand and want *those* exact lines written back.
 
 ## Code intelligence (LSP — [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) + [mason](https://github.com/mason-org/mason.nvim))
 
@@ -94,6 +128,7 @@ Mostly nvim 0.11 built-ins — no plugin needed, which is why `lsp.lua` maps alm
 | `:Mason` | installed servers; `i` install, `X` uninstall |
 
 Diagnostics show inline (`virtual_text`); basedpyright runs in `basic` mode to cut strict-mode noise.
+LSP progress (indexing etc.) shows in the status line as `45%(2)` — average percent and number of running jobs — via native `vim.ui.progress_status()` in lualine's `lualine_x`. Empty when idle. No keys.
 
 ## Completion ([blink.cmp](https://github.com/saghen/blink.cmp), `super-tab` preset)
 
@@ -141,6 +176,50 @@ File management with vim editing instead of a tree sidebar: the directory opens 
 
 Every `:w` shows a confirmation of the pending filesystem operations before running them.
 
+## Pinned files ([harpoon2](https://github.com/ThePrimeagen/harpoon/tree/harpoon2))
+
+Pin the handful of files you're actively bouncing between, then jump to any instantly — faster than the
+fuzzy finder when you already know the 3–4 files in play.
+
+| Key | Does |
+|---|---|
+| `<leader>H` | pin the current file |
+| `<leader>m` | open the harpoon menu (reorder / remove) |
+| `<leader>1`–`<leader>4` | jump to pinned file 1–4 |
+
+## Snacks ([snacks.nvim](https://github.com/folke/snacks.nvim))
+
+folke's utility suite; enabled modules: a startup **dashboard** (on bare `nvim`), **indent guides**, a nicer
+**notifier** (replaces nvim-notify), **zen** mode, **scratch** buffers, plus `bigfile`/`quickfile` perf.
+Turn modules on/off in `snacks.lua`.
+
+| Key | Does |
+|---|---|
+| `<leader>z` | zen mode (distraction-free) |
+| `<leader>.` | scratch buffer |
+| `<leader>n` | notification history |
+
+## Breadcrumb bar ([dropbar.nvim](https://github.com/Bekaboo/dropbar.nvim))
+
+A bar across the top of each window showing your location — `file › class › method` — built from LSP /
+treesitter symbols. Mostly passive; one key to navigate it.
+
+| Key | Does |
+|---|---|
+| `<leader>;` | interactive pick — fuzzy-jump to any symbol in the breadcrumb |
+
+## Markdown rendering ([render-markdown.nvim](https://github.com/MeanderingProgrammer/render-markdown.nvim))
+
+Renders markdown in the buffer instead of showing raw `#`/`*`/backticks — styled headings, boxed code
+blocks, bullets, tables, `[ ]` checkboxes. Active in markdown files and in avante's AI responses.
+No keymaps; `:RenderMarkdown toggle` flips between rendered and raw (raw when you need to edit precisely).
+
+## Sticky scope ([nvim-treesitter-context](https://github.com/nvim-treesitter/nvim-treesitter-context))
+
+A small always-on header at the top of the window showing the enclosing `class`/`def` (etc.) you're
+inside as you scroll — so you never lose track of where you are in a long Python block. No keymaps;
+`:TSContextToggle` turns it off/on.
+
 ## Git ([gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim))
 
 Shows what you've changed since the last commit, in the margin, live — and lets you stage/discard/inspect each change block without leaving the buffer.
@@ -156,6 +235,34 @@ Margin markers: `┃` changed, `+` added, `_` deleted. A "hunk" = one block of c
 | `<leader>gb` | blame current line |
 
 (`<leader>g*` because `<leader>hs` was already taken by the split mappings in vimrc_basic.)
+
+## Diffs ([codediff.nvim](https://github.com/esmuellert/codediff.nvim))
+
+Multi-file diffs in their own tab: side-by-side or inline, a file-tree explorer, per-commit history, and 3-way merge. Character-level highlighting, so `self.foo` → `self._foo` marks two characters rather than two whole lines.
+
+| Key | Does |
+|---|---|
+| `<leader>C` | diff the working tree (opens a new tab) |
+| `<leader>ch` | file history for the current file |
+| `:CodeDiff main...` | merge-base diff, i.e. PR semantics |
+
+Inside the diff tab (all buffer-local — your normal keys return when you close it):
+
+| Key | Does |
+|---|---|
+| `q` | close the tab |
+| `]c` / `[c` | next / previous change |
+| `]f` / `[f` | next / previous file |
+| `<leader>e` / `<leader>E` | focus / toggle the explorer panel |
+| `t` | toggle side-by-side vs inline |
+| `gc` | compact mode — fold unchanged regions |
+| `-` | stage/unstage the current file |
+| `<leader>hS` / `<leader>hu` / `<leader>hr` | stage / unstage / discard the hunk under the cursor |
+| `do` / `dp` | get / put the change, as in vimdiff |
+| `ih` | hunk text object (`vih`, `yih`) |
+| `g?` | show every key in a float |
+
+(`<leader>hS` not `<leader>hs`, and `<leader>E` not `<leader>b` — its defaults collided with the vimrc_basic split mapping and fzf-lua. `]c`/`[c` and `-` deliberately shadow gitsigns and oil while the diff tab is focused.)
 
 ## Surround ([nvim-surround](https://github.com/kylechui/nvim-surround))
 
@@ -189,23 +296,42 @@ Collects every warning/error the LSP knows about into one bottom panel instead o
 | `j`/`k` + `Enter` | jump to the diagnostic |
 | `q` | close |
 
-## Undo history ([undotree](https://github.com/mbbill/undotree))
+## Debugging ([nvim-dap](https://github.com/mfussenegger/nvim-dap) + [nvim-dap-python](https://github.com/mfussenegger/nvim-dap-python) + [nvim-dap-view](https://github.com/igorlfs/nvim-dap-view))
 
-Vim keeps every past state of a buffer, including branches you "overwrote" by undoing then typing. This shows the whole tree and lets you jump to any state. Undo history persists across restarts (`undofile`).
+Real breakpoint debugging for Python: stop on a line, step through, inspect live variables in a panel. Replaces injecting `ipdb.set_trace()` into the buffer. `debugpy` is fetched on demand by `uv` — nothing to install.
+
+Function keys because `<leader>d` is trouble and `<leader>b` is fzf-lua.
 
 | Key | Does |
 |---|---|
-| `<leader>u` | toggle the tree panel |
-| `j`/`k` + `Enter` | preview / jump to a state |
-| `q` | close |
+| `<leader>B` | toggle a breakpoint on this line — red `●` in the margin |
+| `F5` | start debugging, or continue to the next breakpoint |
+| `F10` | step over (run this line, stay in this function) |
+| `F11` | step into (descend into the call) |
+| `F12` | step out (finish this function, return to the caller) |
+| `<leader>V` | toggle the debug panel by hand |
 
-## Auto-pairs ([mini.pairs](https://github.com/echasnovski/mini.pairs))
+`F5` first asks which configuration to run: `file` (this file), `file:args` (prompts for argv), `attach` (connect to an already-running process), `file:doctest`. The panel opens on session start and closes on exit. Inside it, the `'winbar'` letters switch section (`B` breakpoints, `S` scopes, …) and `g?` lists every key.
+
+Margin markers: `●` breakpoint, `◆` conditional, `◇` log point, `✗` rejected, `▶` where execution is stopped (that line also gets a background). nvim-dap's own defaults are grey letters on the sign column's grey — recoloured in `dap.lua` to the `Diagnostic*` groups so they stay visible if the colourscheme changes.
+
+## Undo history (native `nvim.undotree`)
+
+Vim keeps every past state of a buffer, including branches you "overwrote" by undoing then typing. This shows the whole tree and lets you jump to any state. Bundled with nvim 0.12, `packadd`'d in `init.lua` — not a plugin. Undo history persists across restarts (`undofile`, also set in `init.lua`).
+
+| Key | Does |
+|---|---|
+| `<leader>u` | toggle the tree panel (30-col split on the left) |
+| `j`/`k` | move the cursor — the buffer jumps to that state as you move, no `Enter` |
+| `:q` | close (the panel binds no keys of its own, so `q` alone does nothing) |
+
+## Auto-pairs ([mini.pairs](https://github.com/nvim-mini/mini.pairs))
 
 Typing `(`, `[`, `{`, `"`, `'` inserts the closing half; `Backspace` between a pair removes both. No keys to learn.
 
-## Buffer bar / status line ([bufferline](https://github.com/akinsho/bufferline.nvim) / [lualine](https://github.com/nvim-lualine/lualine.nvim))
+## Status line ([lualine](https://github.com/nvim-lualine/lualine.nvim))
 
-Pure display: open buffers as tabs along the top, mode/file/position along the bottom. No keys of their own. Buffers are navigated with the `vimrc_basic` mappings: `Ctrl-N` next, `Ctrl-P` previous, `<leader>D` close current.
+Pure display: mode/file/position along the bottom, plus native LSP progress in `lualine_x` (replaced fidget.nvim). No keys of its own. There is no buffer bar along the top — bufferline was removed as 19-month-stale decoration; buffers are navigated with the `vimrc_basic` mappings (`Ctrl-N` next, `Ctrl-P` previous, `<leader>D` close current), `<leader>b` to pick one, or harpoon for the hot set.
 
 ## AI ([avante.nvim](https://github.com/yetone/avante.nvim))
 

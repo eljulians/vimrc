@@ -42,3 +42,19 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   { import = 'plugins' },
 })
+
+-- 4. Native 0.12 packages ---------------------------------------------------
+-- Shipped with the nvim runtime, opt-in via packadd. Not plugins, so they
+-- don't live in lua/plugins/.
+
+-- Keep undo history on disk so the tree survives restarts. Lived in
+-- undotree.lua's init() until mbbill/undotree was dropped (item 9); it is not
+-- undotree-specific, so it belongs here now.
+vim.o.undofile = true
+
+-- Undo-tree browser, replaces mbbill/undotree. packadd is cheap: it only
+-- sources the 8-line file that defines :Undotree, and the implementation is
+-- require'd on first use. :Undotree toggles a 30-col split, and moving the
+-- cursor in it changes the undo state live -- no <CR> to preview.
+vim.cmd.packadd('nvim.undotree')
+vim.keymap.set('n', '<leader>u', '<cmd>Undotree<cr>', { desc = 'Undo tree' })
